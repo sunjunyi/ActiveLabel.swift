@@ -54,9 +54,12 @@ typealias ElementTuple = (range: NSRange, element: ActiveElement, type: ActiveTy
     @IBInspectable public var lineSpacing: CGFloat = 0 {
         didSet { updateTextStorage(parseText: false) }
     }
-    @IBInspectable public var minimumLineHeight: CGFloat = 0 {
+    @IBInspectable public var textKern: CGFloat = 0 {
         didSet { updateTextStorage(parseText: false) }
     }
+//    @IBInspectable public var minimumLineHeight: CGFloat = 0 {
+//        didSet { updateTextStorage(parseText: false) }
+//    }
     @IBInspectable public var highlightFontName: String? = nil {
         didSet { updateTextStorage(parseText: false) }
     }
@@ -378,9 +381,13 @@ typealias ElementTuple = (range: NSRange, element: ActiveElement, type: ActiveTy
         let paragraphStyle = attributes[NSAttributedString.Key.paragraphStyle] as? NSMutableParagraphStyle ?? NSMutableParagraphStyle()
         paragraphStyle.lineBreakMode = NSLineBreakMode.byWordWrapping
         paragraphStyle.alignment = textAlignment
-        paragraphStyle.lineSpacing = lineSpacing
-        paragraphStyle.minimumLineHeight = minimumLineHeight > 0 ? minimumLineHeight: self.font.pointSize * 1.14
+        paragraphStyle.lineSpacing = lineSpacing - (self.font.lineHeight - self.font.pointSize)
+//        paragraphStyle.minimumLineHeight = minimumLineHeight > 0 ? minimumLineHeight: self.font.pointSize * 1.14
+        
         attributes[NSAttributedString.Key.paragraphStyle] = paragraphStyle
+        if textKern > 0 {
+            attributes[NSAttributedString.Key.kern] = textKern
+        }
         mutAttrString.setAttributes(attributes, range: range)
         
         return mutAttrString
